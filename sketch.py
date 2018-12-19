@@ -20,7 +20,7 @@ def removeEmployee(name):
         dataBase.pop(name)
 
 def generateDB():
-        ID = -1
+        ID = 0
         employees = ['Henrique', 'Jahjir', 'Justin', 'Al', 'Jessica', 'Seanna', 'Lindsey', 'Michael', 'Gail']
 
         for emp in employees:
