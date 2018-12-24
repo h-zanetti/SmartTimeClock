@@ -72,7 +72,7 @@ def getHours(ID):
         dt = dateTime()
         total = 0
         query = "SELECT * FROM {0} WHERE date = '{1}'"
-        mycursor.execute(query.format(name, dt[0]))
+        mycursor.execute(query.format(name.lower(), dt[0]))
         rows = mycursor.fetchall()
         for row in rows:
             if row[2] != None:
@@ -90,6 +90,25 @@ def getHours(ID):
     else:
         print("invalid identification, make sure you are registered on the system and try again.")
 
+    mydb.commit()
+
+def totalHours(ID):
+    info = getInfo(ID)
+    if info != None:
+        name = info[1]
+        query = "SELECT * FROM {0}"
+        mycursor.execute(query.format(name))
+        rows = mycursor.fetchall()
+        total = 0
+        for row in rows:
+            total += float(row[3])
+            query = "UPDATE {0} SET total_hours = {1} WHERE clock_out = '{2}'"
+            mycursor.execute(query.format(name.lower(), total, row[2]))
+    else:
+        print("invalid identification, make sure you are registered on the system and try again.")
+
+    mydb.commit()
+
 def clock_in(ID):
     info = getInfo(ID)
     if info != None:
@@ -98,6 +117,7 @@ def clock_in(ID):
         confirmation = input("Are you clocking in? [Y/N] ")
         if confirmation.lower() == 'y':
             dt = dateTime()
+
             query = "INSERT INTO {0} (date, clock_in) VALUES ('{1}', '{2}')"
             mycursor.execute(query.format(name.lower(), dt[0], dt[1]))
     else:
@@ -121,10 +141,35 @@ def clock_out(ID):
                     query = "UPDATE {0} SET clock_out = '{1}' WHERE clock_out is NULL"
                     mycursor.execute(query.format(name.lower(), dt[1]))
         getHours(ID)
+        totalHours(ID)
         print("You are off the clock.")
     else:
         print("Invalid identification, make sure you are registered on the system and try again.")
 
     mydb.commit()
 
-clock_in(673591)
+def getPaychecks(date):
+    table = "paychecks_%s" % date
+    query = "CREATE TABLE {0} (id VARCHAR(255), name VARCHAR(255), hours VARCHAR(255), salary VARCHAR(255), paycheck VARCHAR(255))"
+    mycursor.execute(query.format(table))
+
+    mycursor.execute("SELECT * FROM employees")
+    rows = mycursor.fetchall()
+    for row in rows:
+        info = getInfo(row[0])
+        query = "INSERT INTO {0} (id, name, salary) VALUES ('{1}', '{2}', '{3}')"
+        mycursor.execute(query.format(table, info[0], info[1], info[-1]))
+        mydb.commit()
+        
+        query = "SELECT * FROM {0}"
+        mycursor.execute(query.format(info[1].lower()))
+        rows1 = mycursor.fetchall()
+        totalHours = rows1[-1][-1]
+        query = "UPDATE {0} SET hours = {1} WHERE id = {2}"
+        mycursor.execute(query.format(table, totalHours, info[0]))
+        mydb.commit()
+
+        paycheck = float(totalHours) * float(info[-1])
+        query = "UPDATE {0} SET paycheck = {1} WHERE id = {2}"
+        mycursor.execute(query.format(table, paycheck, info[0]))
+        mydb.commit()
