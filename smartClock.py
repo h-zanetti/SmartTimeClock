@@ -1,7 +1,11 @@
 import mysql.connector
 import datetime
+import time
+from RPLCD.i2c import CharLCD
 
-mydb = mysql.connector.connect(
+lcd = CharLCD('PCF8574', 0x27)  # Connection with the LCD i2c display with Raspberry Pi
+
+mydb = mysql.connector.connect(  # Create a connection with the database, maybe put this in a separeted code to set up the system automatically installing and creating a MySQL database
     host="localhost",
     user="root",
     passwd="frida14&IPA17",
@@ -88,7 +92,8 @@ def getHours(ID):
         query = "UPDATE {0} SET hours = {1} WHERE hours is NULL"
         mycursor.execute(query.format(name.lower(), round(total, 2)))
     else:
-        print("invalid identification, make sure you are registered on the system and try again.")
+        lcd.clear()
+        lcd.write_string("invalid identification.")
 
     mydb.commit()
 
@@ -105,7 +110,8 @@ def totalHours(ID):
             query = "UPDATE {0} SET total_hours = {1} WHERE clock_out = '{2}'"
             mycursor.execute(query.format(name.lower(), total, row[2]))
     else:
-        print("invalid identification, make sure you are registered on the system and try again.")
+        lcd.clear()
+        lcd.write_string("invalid identification.")
 
     mydb.commit()
 
@@ -113,15 +119,20 @@ def clock_in(ID):
     info = getInfo(ID)
     if info != None:
         name = info[1]
-        print("Welcome back, {0}.".format(info[2])) # Greets employee by the first name
-        confirmation = input("Are you clocking in? [Y/N] ")
-        if confirmation.lower() == 'y':
+        lcd.clear()
+        lcd.write_string('Welcome back,')
+        lcd.cursor_pos = (1,0)
+        lcd.write_string(info[2]) # Greets employee by the first name
+        confirmation = "Are you clocking in? [Y/N] "
+        cmd = input(confirmation)
+        if cmd.lower() == 'y':
             dt = dateTime()
 
             query = "INSERT INTO {0} (date, clock_in) VALUES ('{1}', '{2}')"
             mycursor.execute(query.format(name.lower(), dt[0], dt[1]))
     else:
-        print("Invalid identification, make sure you are registered on the system and try again.")
+        lcd.clear()
+        lcd.write_string("invalid identification.")
 
     mydb.commit()
 
@@ -144,7 +155,8 @@ def clock_out(ID):
         totalHours(ID)
         print("You are off the clock.")
     else:
-        print("Invalid identification, make sure you are registered on the system and try again.")
+        lcd.clear()
+        lcd.write_string("invalid identification.")
 
     mydb.commit()
 
