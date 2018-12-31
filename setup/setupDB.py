@@ -1,9 +1,30 @@
-import mysql.connector
-''' 
-def err1049()
-def err1045()
-def err2005()
-'''
+try:
+    import mysql.connector
+except ImportError as e:
+    print(e)
+    print("Please install 'mysql.connector' library to continue.")
+
+def err1049():
+    global connection
+    connection = False
+    while connection == False:
+        global mydb
+        mydb = mysql.connector.connect(
+            host=host,
+            user=user,
+            passwd=passwd,
+        )
+        print("Try connect to another database:")
+        cmd = input()
+        if cmd != 'quit':
+            try:
+                mydb.database = str(cmd)
+                connection = True
+            except mysql.connector.errors.ProgrammingError as e:
+                print('Error #%s ' % e)
+                connection = False
+        else:
+            break
 
 def connectDB(host, user, passwd, db):
     try:
@@ -17,27 +38,11 @@ def connectDB(host, user, passwd, db):
         global connection
         connection = True
     except mysql.connector.errors.ProgrammingError as e:
-        if str(e) == "1049 (42000): Unknown database '%s'" % db:
+        if str(e)[0:4] == "1049":
             print('Error #%s ' % e)
             connection = False
-            while connection == False:
-                mydb = mysql.connector.connect(
-                    host=host,
-                    user=user,
-                    passwd=passwd,
-                )
-                print("Try connect to another database:")
-                cmd = input()
-                if cmd != 'quit':
-                    try:
-                        mydb.database = str(cmd)
-                        connection = True
-                    except mysql.connector.errors.ProgrammingError as e:
-                        print('Error #%s ' % e)
-                        connection = False
-                else:
-                    break
-        elif str(e) == "1045 (28000): Access denied for user '%s'@'%s' (using password: YES)" % (user, host):
+            err1049()
+        elif str(e)[0:4] == "1045":
             print('Error #%s ' % e)
             connection = False
             while connection == False:
@@ -56,15 +61,15 @@ def connectDB(host, user, passwd, db):
                     except mysql.connector.errors.ProgrammingError as e:
                         print('Error #%s ' % e)
                         connection = False
-                        if str(e)[0:4] != "1045":
-                            break
+                        if str(e)[0:4] == "1049":
+                            err1049()
                 else:
                     break
         else:
             print('Error #%s ' % e)
             connection = False
     except mysql.connector.errors.DatabaseError as e:
-        if str(e) == "2005 (HY000): Unknown MySQL server host '%s' (0)" % host:
+        if str(e)[0:4] == "2005":
             print('Error #%s ' % e)
             connection = False
             while connection == False:
@@ -86,6 +91,7 @@ def connectDB(host, user, passwd, db):
                     except mysql.connector.errors.DatabaseError as e:
                         print('Error #%s ' % e)
                         connection = False
+                        break
                 else:
                     break
         else:
@@ -99,7 +105,7 @@ db = input("Database: ")
 connectDB(host, user, passwd, db)
 
 while connection == False:
-    print("Fail to connect, do you ant to try again? [Y/N]")
+    print("Fail to connect, do you want to try again? [Y/N]")
     cmd = input()
     if str(cmd).lower() == 'y':
         host = input("Host: ")
@@ -108,4 +114,6 @@ while connection == False:
         db = input("Database: ")
         connectDB(host, user, passwd, db)
     else:
+        print("The system is not connected to a database.")
+        print("Such connection must be created in order to use the system correctly.")
         break
