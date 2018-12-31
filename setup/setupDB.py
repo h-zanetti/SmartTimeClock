@@ -117,7 +117,7 @@ while connection == False:
         db = input("Database: ")
         connectDB(host, user, passwd, db)
     else:
-        print("The system is not connected to a database.")
+        print("The system is not connected to a database,")
         print("Such connection must be created in order to use the system correctly.")
         break
 
