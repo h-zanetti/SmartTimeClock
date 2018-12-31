@@ -1,8 +1,11 @@
 try:
+    import time
     import mysql.connector
+    from RPLCD.i2c import CharLCD
 except ImportError as e:
     print(e)
-    print("Please install 'mysql.connector' library to continue.")
+
+lcd = CharLCD('PCF8574', 0x27)
 
 def err1049():
     global connection
@@ -117,3 +120,11 @@ while connection == False:
         print("The system is not connected to a database.")
         print("Such connection must be created in order to use the system correctly.")
         break
+
+if connection == True:
+    lcd.clear()
+    lcd.write_string("Successfully")
+    lcd.cursor_pos = (1,0)
+    lcd.write_string("connected to DB")
+    time.sleep(3)
+    lcd.clear()
