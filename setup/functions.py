@@ -1,4 +1,4 @@
-import setupDB
+from setupDB import mydb
 import datetime
 
 mycursor = mydb.cursor()
