@@ -44,7 +44,24 @@ def connectDB(host, user, passwd, db):
         if str(e)[0:4] == "1049":
             print('Error #%s ' % e)
             connection = False
-            err1049()
+            print("It looks like the database '%s' does not exist," % db)
+            print("To create such database type 'create'")
+            print("To connect to another database type 'connect'")
+            cmd = input()
+            if str(cmd).lower() == "create":
+                mydb = mydb.connector.connect(
+                    host=host,
+                    user=user,
+                    passwd=passwd,
+                )
+                mycursor = mydb.cursor()
+                mycursor.execute("CREATE DATABASE %s" % db)
+                mydb.database = db
+                for i in mycursor:
+                    print(i)
+                connection = True
+            elif str(cmd).lower() == "connect":
+                err1049()
         elif str(e)[0:4] == "1045":
             print('Error #%s ' % e)
             connection = False
