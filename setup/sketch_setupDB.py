@@ -5,7 +5,7 @@ try:
         host='localhost', #DatabaseError: 2005
         user='root', #ProgramingError: 1045
         passwd='frida14&IPA17', #ProgramingError: 1045
-        database='nada' #ProgramingError: 1049
+        database='smarttimeclock' #ProgramingError: 1049
     )
 except mysql.connector.errors.ProgrammingError as e:
     print(e)
