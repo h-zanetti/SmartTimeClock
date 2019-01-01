@@ -1,9 +1,6 @@
-try:
-    import time
-    import mysql.connector
-    from RPLCD.i2c import CharLCD
-except ImportError as e:
-    print(e)
+import time
+import mysql.connector
+from RPLCD.i2c import CharLCD
 
 lcd = CharLCD('PCF8574', 0x27)
 
@@ -126,7 +123,7 @@ db = input("Database: ")
 connectDB(host, user, passwd, db)
 
 while connection == False:
-    print("Fail to connect, do you want to try again? [Y/N]")
+    print("Fail to connect, would you like to try again? [Y/N]")
     cmd = input()
     if str(cmd).lower() == 'y':
         host = input("Host: ")

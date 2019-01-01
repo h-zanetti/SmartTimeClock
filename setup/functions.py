@@ -1,16 +1,8 @@
-import mysql.connector
+import setupDB
 import datetime
-import time
-from RPLCD.i2c import CharLCD
 
 lcd = CharLCD('PCF8574', 0x27)  # Connection with the LCD i2c display with Raspberry Pi
 
-mydb = mysql.connector.connect(  # Create a connection with the database, maybe put this in a separeted code to set up the system automatically installing and creating a MySQL database
-    host="localhost",
-    user="root",
-    passwd="frida14&IPA17",
-    database="SmartTimeClock"
-)
 mycursor = mydb.cursor()
 
 empData = ['id', 'last_name', 'first_name', 'fingerprint_1', 'fingerprint_2', 'salary']
