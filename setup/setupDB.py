@@ -141,5 +141,5 @@ if connection == True:
     lcd.write_string("Successfully")
     lcd.cursor_pos = (1,0)
     lcd.write_string("connected to DB")
-    time.sleep(3)
+    time.sleep(2)
     lcd.clear()
