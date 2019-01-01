@@ -1,4 +1,4 @@
-from setupDB import mydb
+from setupDB import mydb, lcd
 import datetime
 
 mycursor = mydb.cursor()

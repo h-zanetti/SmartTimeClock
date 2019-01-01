@@ -1,4 +1,4 @@
 import setupDB
-import functions
+from functions import addEmployee
 
 addEmployee()
