@@ -1,8 +1,6 @@
 import setupDB
 import datetime
 
-lcd = CharLCD('PCF8574', 0x27)  # Connection with the LCD i2c display with Raspberry Pi
-
 mycursor = mydb.cursor()
 
 empData = ['id', 'last_name', 'first_name', 'fingerprint_1', 'fingerprint_2', 'salary']
