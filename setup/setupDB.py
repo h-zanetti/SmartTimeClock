@@ -1,8 +1,6 @@
-
 import time
 import mysql.connector
 from RPLCD.i2c import CharLCD
-
 
 lcd = CharLCD('PCF8574', 0x27)
 
@@ -52,6 +50,7 @@ def connectDB(host, user, passwd, db):
                     host=host,
                     user=user,
                     passwd=passwd,
+                    database=None
                 )
                 mycursor = mydb.cursor()
                 mycursor.execute("CREATE DATABASE %s" % db)
