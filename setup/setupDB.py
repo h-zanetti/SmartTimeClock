@@ -46,7 +46,7 @@ def connectDB(host, user, passwd, db):
             print("To connect to another database type 'connect'")
             cmd = input()
             if str(cmd).lower() == "create":
-                mydb = mydb.connector.connect(
+                mydb = mysql.connector.connect(
                     host=host,
                     user=user,
                     passwd=passwd,
