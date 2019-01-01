@@ -1,9 +1,8 @@
-try:
-    import time
-    import mysql.connector
-    from RPLCD.i2c import CharLCD
-except ImportError as e:
-    print(e)
+
+import time
+import mysql.connector
+from RPLCD.i2c import CharLCD
+
 
 lcd = CharLCD('PCF8574', 0x27)
 
